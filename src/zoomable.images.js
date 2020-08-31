@@ -41,7 +41,7 @@ zoomable.images = (function(){
 	
 	    ot = ot[0];
 	    
-	    var id = ot.getAttribute("data-id");
+	    var id = ot.getAttribute("data-image-id");
 	    
 	    if (! id){
 		return;
@@ -167,7 +167,7 @@ zoomable.images = (function(){
 	'show_static': function(e){
 	    
 	    var el = e.target;
-	    var id = el.getAttribute("data-id");
+	    var id = el.getAttribute("data-image-id");
 	    
 	    if (! id){
 		console.log("Missing ID")
@@ -200,7 +200,7 @@ zoomable.images = (function(){
 	'show_tiles': function(e){
 	    
 	    var el = e.target;
-	    var id = el.getAttribute("data-id");
+	    var id = el.getAttribute("data-image-id");
 	    
 	    if (! id){
 		console.log("Missing ID")
@@ -241,75 +241,35 @@ zoomable.images = (function(){
 	    static_el.style.display = "none";
 	    tiles_el.style.display = "block";
 	    
-	    if (! map){
-		
-		map = L.map(map_id, {
-		    center: [300, 300],
-		    crs: L.CRS.Simple,
-		    zoom: zoom,
-		    minZoom: 1,
-		    fullscreenControl: true,
-		    preferCanvas: true,
-		});
-		
-		map.fullscreenControl.setPosition('topright');
-		map.zoomControl.setPosition('bottomright');	   
-		
-		if (L.Control.Image) {
-
-		    var _this = self;
-
-		    var image_opts = {
-			'position': 'topright',
-			
-			on_success: function(map, canvas) {
-			    
-			    var id = _this.get_id();
-
-			    var dt = new Date();
-			    var iso = dt.toISOString();
-			    var iso = iso.split('T');
-			    var ymd = iso[0];
-			    ymd = ymd.replace(/-/g, "");
-
-			    var ot = document.getElementsByClassName("zoomable-image");
-			    ot = ot[0];
-			    
-			    var id = ot.getAttribute("data-id");
-			    
-			    var parts = [
-				ymd,
-				id,
-			    ];
-			    
-			    var str_parts = parts.join("-");		    
-			    var name = str_parts + ".png";
-			    
-			    canvas.toBlob(function(blob) {
-				saveAs(blob, name);
-			    });
-			}
-			
-		    };
-		    
-		    var image_control = new L.Control.Image(image_opts);
-		    map.addControl(image_control);
-		}
-
-		var tile_opts = {
-		    setMaxBounds: true,
-		    quality: "color",
-		};
-		
-		// var tiles_url = location.href + "tiles/info.json";
-		
-		var tiles_url = tiles_el.getAttribute("data-tiles-url");
-		tiles_url = tiles_url + "info.json";
-		
-		var tile_layer = L.tileLayer.iiif(tiles_url, tile_opts)
-		
-		tile_layer.addTo(map);
+	    if (map){
+		map.remove();
 	    }
+
+	    map = L.map(map_id, {
+		center: [300, 300],
+		crs: L.CRS.Simple,
+		zoom: zoom,
+		minZoom: 1,
+		fullscreenControl: true,
+		preferCanvas: true,
+	    });
+	    
+	    map.fullscreenControl.setPosition('topright');
+	    map.zoomControl.setPosition('bottomright');	   
+	    
+	    var tile_opts = {
+		setMaxBounds: true,
+		quality: "color",
+	    };
+	    
+	    // var tiles_url = location.href + "tiles/info.json";
+	    
+	    var tiles_url = tiles_el.getAttribute("data-tiles-url");
+	    tiles_url = tiles_url + "info.json";
+	    
+	    var tile_layer = L.tileLayer.iiif(tiles_url, tile_opts)
+	    
+	    tile_layer.addTo(map);
 	    
 	    map.on('fullscreenchange', function () {
 		if (! map.isFullscreen()){
@@ -321,6 +281,47 @@ zoomable.images = (function(){
 	    
 	    map.toggleFullscreen();
 	    map.setZoom(z);
+	    
+	    if (L.Control.Image) {
+
+		var _this = self;
+		
+		var image_opts = {
+		    'position': 'topright',
+		    
+		    on_success: function(map, canvas) {
+			
+			var id = _this.get_id();
+			
+			var dt = new Date();
+			var iso = dt.toISOString();
+			var iso = iso.split('T');
+			var ymd = iso[0];
+			ymd = ymd.replace(/-/g, "");
+			
+			var ot = document.getElementsByClassName("zoomable-image");
+			ot = ot[0];
+			
+			var id = ot.getAttribute("data-image-id");
+			
+			var parts = [
+			    ymd,
+			    id,
+			];
+			
+			var str_parts = parts.join("-");		    
+			var name = str_parts + ".png";
+			
+			canvas.toBlob(function(blob) {
+			    saveAs(blob, name);
+			});
+		    }
+		    
+		};
+		
+		var image_control = new L.Control.Image(image_opts);
+		map.addControl(image_control);
+	    }
 	    
 	    var tiles_button = document.getElementById("zoomable-toggle-tiles-" + id);
 	    tiles_button.style.display = "none";
@@ -338,7 +339,7 @@ zoomable.images = (function(){
 	    
 	    ot = ot[0];
 	    
-	    var id = ot.getAttribute("data-id");
+	    var id = ot.getAttribute("data-image-id");
 	    
 	    if (! id){
 		return;
@@ -357,25 +358,37 @@ zoomable.images = (function(){
 	    for (var i=0; i < count; i++){
 		
 		var el = images[i];
-		var id = el.getAttribute("data-id");
+		var id = el.getAttribute("data-image-id");
 		
 		if (! id){
 		    continue;
 		}
-		
-		var tiles_button = document.getElementById("zoomable-toggle-tiles-" + id);
-		
+
 		var tiles_id = "zoomable-tiles-" +id;
 		var tiles_el = document.getElementById(tiles_id);
 		var tiles_url = tiles_el.getAttribute("data-tiles-url");
-		
-		self.ensure_iiif(tiles_url, function(){
+
+		var mk_tiles_func = function(id){
 		    
-		    if (has_iiif){
-			tiles_button.onclick = self.show_tiles;
-			tiles_button.style.display = "block";
-		    }
-		});
+		    var tiles_id = "zoomable-tiles-" +id;
+		    var tiles_el = document.getElementById(tiles_id);
+		    var tiles_url = tiles_el.getAttribute("data-tiles-url");
+		    
+		    var tiles_button = document.getElementById("zoomable-toggle-tiles-" + id);
+
+		    return function(){
+
+			if (has_iiif){			    
+			    tiles_button.setAttribute("data-image-id", id);
+			    tiles_button.onclick = self.show_tiles;
+			    tiles_button.style.display = "block";
+			}
+		    };
+		};
+
+		var tiles_func = mk_tiles_func(id);
+
+		self.ensure_iiif(tiles_url, tiles_func);
 	    }
 	    
 	    document.addEventListener('keydown', function(e){
