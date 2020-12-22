@@ -4,7 +4,7 @@ JavaScript and CSS libraries for enabling IIIF-compatible "zoomable" images.
 
 ## Important
 
-Work in progress. For now, please consult this blog post for details:
+The documentation for this package is incomplete. For now, please consult this blog post for details:
 
 * https://millsfield.sfomuseum.org/blog/2020/09/14/js-zoomable/ 
 
