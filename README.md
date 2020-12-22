@@ -1,5 +1,7 @@
 # js-zoomable-images
 
+JavaScript and CSS libraries for enabling IIIF-compatible "zoomable" images.
+
 ## Important
 
 Work in progress. For now, please consult this blog post for details:
