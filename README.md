@@ -12,6 +12,24 @@ The documentation for this package is incomplete. For now, please consult this b
 
 There are example HTML files demonstrating how to use the `zoomable.images` JavaScript and CSS files in the [example](example) folder.
 
+## Directory structure
+
+### dist
+
+The `dist` folder contains copies of the most recent "rollups" for the `zoomable.images` Javascript and CSS libraries. These can be used in your webpages without any external dependencies.
+
+### example
+
+The `example` folder contains HTML pages demonstrating how to use the `zoomable.images` libraries. There are examples for the "rolled up" versions as well as the source files used in conjunction with third-party dependencies.
+
+### lib
+
+The third-party dependencies used by the `zoomable.images` JavaScript and CSS libraries.
+
+### src
+
+The source files for the `zoomable.images` JavaScript and CSS libraries.
+
 ## CSS
 
 #### zoomable-image-{IMAGE_ID}
