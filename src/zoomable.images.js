@@ -1,5 +1,8 @@
 var zoomable = zoomable || {}
 
+// current error:
+// Uncaught TypeError: map.zoomBy is not a function
+
 zoomable.images = (function(){
 
     var map;
@@ -442,7 +445,7 @@ zoomable.images = (function(){
 	    var zoom_by = Math.random() * 2;
 	    zoom_by = parseInt(zoom_by);
 	    
-	    zoom_by = (random_boolean()) ? zoom_by : - zoom_by;
+	    zoom_by = (self.random_boolean()) ? zoom_by : - zoom_by;
 	    map.zoomBy(zoom_by);
 
 	    timeout_set_direction = setTimeout(set_direction, delay);
