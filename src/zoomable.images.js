@@ -399,9 +399,9 @@ zoomable.images = (function(){
 
 		_self.move(x, y);	
 	    }, 50);
-	};
+	},
 
-	'set_direction' = function(){
+	'set_direction': function(){
 
 	    if (timeout_set_direction){
 		clearTimeout(timeout_set_direction);
@@ -435,7 +435,6 @@ zoomable.images = (function(){
 	    }
 	    
 	    var deg = self.get_degrees(x, y);
-	    self.rotate_drone(deg);
 
 	    var delay = parseInt(Math.random() * 60000);
 	    delay = Math.max(15000, delay);
