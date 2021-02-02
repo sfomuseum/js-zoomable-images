@@ -446,10 +446,15 @@ zoomable.images = (function(){
 	    zoom_by = parseInt(zoom_by);
 	    
 	    zoom_by = (self.random_boolean()) ? zoom_by : - zoom_by;
-	    map.zoomBy(zoom_by);
+	    // map.zoomBy(zoom_by);
 
-	    timeout_set_direction = setTimeout(set_direction, delay);
+	    console.log("ZOOM BY", zoom_by);
+	    map.setZoom(zoom_by);
+	    
+	    timeout_set_direction = setTimeout(self.set_direction, delay);
 
+	    console.log("MOVE", x, y);
+	    
 	    self.move(x, y);
 	},
 
