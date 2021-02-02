@@ -372,6 +372,12 @@ zoomable.images = (function(){
 	
 	'move': function(x, y){
 
+	    if (! wandering){
+		return;
+	    }
+	    
+	    console.log("MOVE");
+	    
 	    if (timeout_move){
 		clearTimeout(timeout_move);
 	    }
@@ -379,8 +385,11 @@ zoomable.images = (function(){
 	    var _self = self;
 	    
 	    timeout_move = setTimeout(function(){
+
+		console.log("MOVING", x, y);
 		
-		map.panBy(x, y);
+		var pt = L.point(x, y)
+		map.panBy(pt);
 
 		var center = map.getCenter();
 		var zoom = map.getZoom();
@@ -448,8 +457,11 @@ zoomable.images = (function(){
 	    zoom_by = (self.random_boolean()) ? zoom_by : - zoom_by;
 	    // map.zoomBy(zoom_by);
 
-	    console.log("ZOOM BY", zoom_by);
-	    map.setZoom(zoom_by);
+	    var zoom = map.getZoom();
+	    
+	    console.log("ZOOM BY", zoom, zoom_by, zoom + zoom_by);
+	    
+	    map.setZoom(zoom + zoom_by);
 	    
 	    timeout_set_direction = setTimeout(self.set_direction, delay);
 
