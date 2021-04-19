@@ -277,7 +277,7 @@ zoomable.images = (function(){
 		}
 	    });
 	    
-	    var z = 3;
+	    var z = 1;
 	    
 	    map.toggleFullscreen();
 	    map.setZoom(z);
