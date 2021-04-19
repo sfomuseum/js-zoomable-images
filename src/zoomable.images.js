@@ -258,7 +258,7 @@ zoomable.images = (function(){
 	    map.zoomControl.setPosition('bottomright');	   
 	    
 	    var tile_opts = {
-		setMaxBounds: true,
+		fitBounds: true,
 		quality: "color",
 	    };
 	    
@@ -311,6 +311,13 @@ zoomable.images = (function(){
 			
 			var str_parts = parts.join("-");		    
 			var name = str_parts + ".png";
+
+			// ADD EXIF HERE
+
+			var data_url = canvas.toDataURL();
+			data_url = data_url.replace("data:image/png;base64,", "");
+
+			
 			
 			canvas.toBlob(function(blob) {
 			    saveAs(blob, name);
