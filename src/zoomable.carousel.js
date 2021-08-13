@@ -35,6 +35,9 @@ zoomable.carousel = (function(){
 		var img_src = img_el.getAttribute("src");
 
 		_images.push(img_src);
+		console.log("WHAT", img_src);
+
+		self.preload(img_src);
 
 		var data_attributes = {};
 
@@ -76,8 +79,6 @@ zoomable.carousel = (function(){
 
 	    _carousel.appendChild(rewind_el);
 
-	    // TO DO: WHAT IF count < _visible, e.g. there are only 2 images
-	    
 	    var panes = _visible;
 
 	    if (count < _visible){
@@ -342,6 +343,34 @@ zoomable.carousel = (function(){
 
 	},
 
+	'preload': function(img_src){
+
+	    // This needs to be reconciled with source_map
+	    // in zoomable.builder.js
+
+	    var others = [
+		"b", "c", "z", "n", "s",
+	    ];
+
+	    var count = others.length;
+
+	    setTimeout(function(){
+
+		for (var i=0; i < count; i++){
+
+		    var src = img_src.replace("_s", "_" + others[i]);
+		    var el = document.createElement("img");
+
+		    el.onload = function(){
+			// 
+		    };
+		    
+		    el.src = src;
+		}
+
+	    }, 0);
+
+	}
     };
 
     return self;
