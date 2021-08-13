@@ -25,8 +25,8 @@ zoomable.carousel = (function(){
 	    var images = document.getElementsByClassName("zoomable-carousel-image");
 	    var count = images.length;
 
-	    if (count < 2){
-		return;
+	    if (count < _visible) {
+		carousel.setAttribute("class", "zoomable-carousel-" + count);
 	    }
 
 	    for (var i=0; i < count; i++){
@@ -77,8 +77,14 @@ zoomable.carousel = (function(){
 	    _carousel.appendChild(rewind_el);
 
 	    // TO DO: WHAT IF count < _visible, e.g. there are only 2 images
+	    
+	    var panes = _visible;
 
-	    for (var i=0; i < _visible; i++){
+	    if (count < _visible){
+		panes = count;
+	    }
+
+	    for (var i=0; i < panes; i++){
 
 		var j = (i == 0) ? count - 1 : i - 1;
 
@@ -107,7 +113,7 @@ zoomable.carousel = (function(){
 
 		_carousel.appendChild(item_node);
 	    }
-
+		
 	    var advance_el = document.createElement("li");
 	    advance_el.setAttribute("id", "zoomable-carousel-control-advance");
 	    advance_el.setAttribute("class", "zoomable-carousel-item zoomable-carousel-control");
@@ -172,6 +178,12 @@ zoomable.carousel = (function(){
 	    }
 
 	    var current_el = visible[current_idx];
+
+	    if (! current_el){
+		console.log("Can't get element for index " + current_idx);
+		return false;
+	    }
+
 	    var current_src = current_el.getAttribute("src");
 	    var current_attrs = _attrs[current_src];
 
@@ -312,6 +324,22 @@ zoomable.carousel = (function(){
 
 	    current_zoomable.replaceWith(updated_zoomable);
 	    zoomable.images.init();
+
+	    var updated_id = updated_zoomable.getAttribute("data-image-id");
+	    var img_id = "zoomable-picture-default-" + updated_id;
+
+	    var im = document.getElementById(img_id);
+
+	    im.onload = function() {
+
+		var w = this.width;
+		var h = this.height;
+		
+		if (h = w){
+		    zoomable.images.resize_visible();
+		}
+	    };
+
 	},
 
     };

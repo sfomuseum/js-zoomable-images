@@ -7,6 +7,14 @@
     margin: 0 auto;
 }
 
+#zoomable-carousel-2 {
+    grid-template-columns:1fr 1fr 1fr 1fr !important;
+}
+
+#zoomable-carousel-1 {
+    grid-template-columns:1fr 1fr 1fr !important;
+}
+
 .zoomable-carousel-item {
     border:2px solid #fff;
     list-style-type: none !important;
