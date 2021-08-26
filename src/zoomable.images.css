@@ -158,19 +158,19 @@ img {
 	}
 	
 	.zoomable-static {
-		min-height:270px;
-		min-width:270px;
+		min-height:auto;
+		min-width:auto;
 		background-size: 270px 270px;
 	}
 
 	.zoomable-picture {
-		min-height:270px !important;
-		min-width:270px !important;
+		min-height:auto !important;
+		min-width:auto !important;
 	}
 	
 	.zoomable-picture-default {
-		min-height:270px !important;
-		min-width:270px !important;
+		min-height:auto !important;
+		min-width:auto !important;
 	}
 	
 }
