@@ -148,7 +148,7 @@ zoomable.images = (function(){
 	    var on_success = function(e){
 		
 		var rsp = e.target;
-		console.log(info_url, rsp.status, rsp.statusText);
+		// console.log(info_url, rsp.status, rsp.statusText);
 		
 		has_iiif = (rsp.status == 200) ? true : false;
 		
@@ -214,7 +214,7 @@ zoomable.images = (function(){
 	'show_tiles_with_id': function(id, zoom){
 	    
 	    if (! zoom){
-		zoom = 1;
+		zoom = 3;
 	    }
 	    
 	    var static_id = "zoomable-static-" + id;
@@ -245,14 +245,18 @@ zoomable.images = (function(){
 		map.remove();
 	    }
 
-	    map = L.map(map_id, {
-		center: [300, 300],
+	    var center = [ 0, 0 ];
+
+	    var map_args = {
+		center: center,
+		zoom: 1,
 		crs: L.CRS.Simple,
-		zoom: zoom,
 		minZoom: 1,
 		fullscreenControl: true,
 		preferCanvas: true,
-	    });
+	    };
+
+	    map = L.map(map_id, map_args);
 	    
 	    map.fullscreenControl.setPosition('topright');
 	    map.zoomControl.setPosition('bottomright');	   
@@ -272,15 +276,19 @@ zoomable.images = (function(){
 	    tile_layer.addTo(map);
 	    
 	    map.on('fullscreenchange', function () {
+
 		if (! map.isFullscreen()){
 		    self.show_static_with_id(_id);
+		    return;
 		}
+
+		// See this? It's important. If we try to do this _outside_ of
+		// fullscreen callback then all kinds of weirdness happens including
+		// things like the map not actually zooming...
+		map.setZoom(zoom);
 	    });
-	    
-	    var z = 1;
-	    
+
 	    map.toggleFullscreen();
-	    map.setZoom(z);
 	    
 	    if (L.Control.Image) {
 
