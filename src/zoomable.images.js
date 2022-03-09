@@ -6,7 +6,7 @@ zoomable.images = (function(){
     var _id;	// for the window.resize event below
 
     var has_iiif;
-
+    var iiif_quality = 'color';	// non-standard default to maintain backwards compatibility
     var self = {
 
 	'available_width': function(){
@@ -152,6 +152,24 @@ zoomable.images = (function(){
 		
 		has_iiif = (rsp.status == 200) ? true : false;
 		
+		if (has_iiif){
+
+		    try {
+			
+			var info = JSON.parse(rsp.response);
+			var profile = info["profile"];
+
+			// Note: This only accounts for level 0 but woulda-coulda-shoulda
+			// also consult profile[1] which would be a list of candidate qualities...
+
+			if (profile[0] == "http://iiif.io/api/image/2/level0.json"){
+			    iiif_quality = "default";
+			}
+
+		    } catch(err) {
+			console.log("Unable to determine (IIIF) quality", err);
+		    }
+
 		if (cb){
 		    cb();
 		}
@@ -263,7 +281,7 @@ zoomable.images = (function(){
 	    
 	    var tile_opts = {
 		fitBounds: true,
-		quality: "color",
+		quality: iiif_quality,
 	    };
 	    
 	    // var tiles_url = location.href + "tiles/info.json";
