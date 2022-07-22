@@ -6,7 +6,8 @@ zoomable.images = (function(){
     var _id;	// for the window.resize event below
 
     var has_iiif;
-    var iiif_quality = 'color';	// non-standard default to maintain backwards compatibility
+    var iiif_quality = 'default';
+
     var self = {
 
 	'available_width': function(){
@@ -144,14 +145,19 @@ zoomable.images = (function(){
 	    }
 	    
 	    var info_url = tiles_url + "info.json";
-	    
+
 	    var on_success = function(e){
 		
 		var rsp = e.target;
-		// console.log(info_url, rsp.status, rsp.statusText);
 		
 		has_iiif = (rsp.status == 200) ? true : false;
-		
+
+		// START OF custom code to account for level0 disconnect
+		// when generating SFOM tiles. Once we've cleaned up all
+		// the  existing tiles (and info.json files) then the code
+		// pull directly from details["qualities"][0] below should
+		// be enabled (20220307/thisisaaronland)
+
 		if (has_iiif){
 
 		    try {
@@ -159,16 +165,25 @@ zoomable.images = (function(){
 			var info = JSON.parse(rsp.response);
 			var profile = info["profile"];
 
-			// Note: This only accounts for level 0 but woulda-coulda-shoulda
-			// also consult profile[1] which would be a list of candidate qualities...
-
-			if (profile[0] == "http://iiif.io/api/image/2/level0.json"){
+			if (profile[0] == "https://iiif.io/api/image/2/level0.json"){
 			    iiif_quality = "default";
 			}
+
+			/*
+			var count = profile.length;
+
+			if (count == 2){
+			    var details = profile[1];
+			    iiif_quality = details["qualities"][0];
+			}
+			*/
 
 		    } catch(err) {
 			console.log("Unable to determine (IIIF) quality", err);
 		    }
+		}
+
+		// END OF custom code to account for level0 disconnect
 
 		if (cb){
 		    cb();
@@ -224,7 +239,7 @@ zoomable.images = (function(){
 		console.log("Missing ID")
 		return false;
 	    }
-	    
+
 	    _id = id;
 	    return self.show_tiles_with_id(id);
 	},
@@ -233,6 +248,10 @@ zoomable.images = (function(){
 	    
 	    if (! zoom){
 		zoom = 3;
+	    }
+	    
+	    if (! quality){
+		quality = iiif_quality;
 	    }
 	    
 	    var static_id = "zoomable-static-" + id;
@@ -279,9 +298,15 @@ zoomable.images = (function(){
 	    map.fullscreenControl.setPosition('topright');
 	    map.zoomControl.setPosition('bottomright');	   
 	    
+	    var quality = map_el.getAttribute("data-iiif-quality");
+
+	    if (! quality){
+		quality = iiif_quality;
+	    }
+
 	    var tile_opts = {
 		fitBounds: true,
-		quality: iiif_quality,
+		quality: quality,
 	    };
 	    
 	    // var tiles_url = location.href + "tiles/info.json";
@@ -411,7 +436,7 @@ zoomable.images = (function(){
 
 		    return function(){
 
-			if (has_iiif){			    
+			if (has_iiif){		
 			    tiles_button.setAttribute("data-image-id", id);
 			    tiles_button.onclick = self.show_tiles;
 			    tiles_button.style.display = "block";
