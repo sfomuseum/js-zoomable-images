@@ -332,8 +332,8 @@ zoomable.images = (function(){
 	    });
 
 	    map.toggleFullscreen();
-	    
-	    if (L.Control.Image) {
+
+	    if ((L.Control.Image) && (static_el.getAttribute("data-no-image-control") != "true")){
 
 		var _this = self;
 		
