@@ -152,6 +152,8 @@ zoomable.images = (function(){
 		
 		has_iiif = (rsp.status == 200) ? true : false;
 
+		console.log("HAS IIIF", info_url, has_iiif);
+		
 		// START OF custom code to account for level0 disconnect
 		// when generating SFOM tiles. Once we've cleaned up all
 		// the  existing tiles (and info.json files) then the code
@@ -405,60 +407,52 @@ zoomable.images = (function(){
 	    
 	    return id;
 	},
-
-	// things we do once the page has loaded
-
-	// FIX ME... do this for one element, not all of them...
 	
-	'init': function(){
+	'init': function(el){
 	    
-	    var images = document.getElementsByClassName("zoomable-image");
-	    var count = images.length;
+	    var id = el.getAttribute("data-image-id");
 
+	    console.log("ID", id);
 	    
-	    for (var i=0; i < count; i++){
+	    if (! id){
+		console.log("NO IMAGE ID");
+		return;
+	    }
+	    
+	    var tiles_id = "zoomable-tiles-" +id;
+	    var tiles_el = document.getElementById(tiles_id);
+	    var tiles_url = tiles_el.getAttribute("data-tiles-url");
+	    
+	    var mk_tiles_func = function(id){
 		
-		var el = images[i];
-		var id = el.getAttribute("data-image-id");
-		
-		if (! id){
-		    console.log("NO IMAGE ID");
-		    continue;
-		}
-
 		var tiles_id = "zoomable-tiles-" +id;
 		var tiles_el = document.getElementById(tiles_id);
 		var tiles_url = tiles_el.getAttribute("data-tiles-url");
+		
+		var tiles_button = document.getElementById("zoomable-toggle-tiles-" + id);
+		
+		return function(){
 
-		var mk_tiles_func = function(id){
-		    
-		    var tiles_id = "zoomable-tiles-" +id;
-		    var tiles_el = document.getElementById(tiles_id);
-		    var tiles_url = tiles_el.getAttribute("data-tiles-url");
-		    
-		    var tiles_button = document.getElementById("zoomable-toggle-tiles-" + id);
-
-		    return function(){
-
-			if (has_iiif){		
-			    tiles_button.setAttribute("data-image-id", id);
-			    tiles_button.onclick = self.show_tiles;
-			    tiles_button.style.display = "block";
-			}
-		    };
+		    if (has_iiif){		
+			tiles_button.setAttribute("data-image-id", id);
+			tiles_button.onclick = self.show_tiles;
+			tiles_button.style.display = "block";
+		    }
 		};
-
-		var tiles_func = mk_tiles_func(id);
-		self.ensure_iiif(tiles_url, tiles_func);
-	    }
+	    };
 	    
+	    var tiles_func = mk_tiles_func(id);
+	    self.ensure_iiif(tiles_url, tiles_func);
+	    self.onload_image(id);
+
+	    /*
 	    document.addEventListener('keydown', function(e){
 		
 		// z
 		
 		if (e.keyCode == 90) {
 		    
-		    var id = get_id();
+		    var id = self.get_id();
 		    
 		    if (! id){
 			return;
@@ -471,6 +465,7 @@ zoomable.images = (function(){
 		}
 		
 	    });
+	    */
 	},
     };
 

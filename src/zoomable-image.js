@@ -10,6 +10,9 @@ class ZoomableImageElement extends HTMLPictureElement {
 	
 	var id = this.getAttribute("zoomable-image-id");
 	var tiles_url = this.getAttribute("zoomable-tiles-url");
+
+	console.log("ID", id);
+	console.log("TILES", tiles_url);
 	
 	var src_els = Array.from(this.querySelectorAll("source"));
 	var count_src = src_els.length;
@@ -53,8 +56,10 @@ class ZoomableImageElement extends HTMLPictureElement {
 	picture_img.setAttribute("id", "zoomable-picture-default-" + id);
 	picture_img.setAttribute("class", "card-img-top zoomable-picture-default image-square image-zoomable");
 	picture_img.onload = function(){
-	    zoomable.images.init();
-	    zoomable.images.onload_image(id);
+	    console.log("LOAD", id);
+	    var el = document.getElementById("zoomable-image-" + id);
+	    console.log("EL", el);
+	    zoomable.images.init(el);	    
 	};
 	
 	picture.appendChild(picture_img);
@@ -89,6 +94,7 @@ class ZoomableImageElement extends HTMLPictureElement {
 	wrapper.appendChild(static_el);	
 	wrapper.appendChild(tiles);
 
+	console.log("REPLACE");
 	this.parentNode.replaceChild(wrapper, this);
     }
 }
