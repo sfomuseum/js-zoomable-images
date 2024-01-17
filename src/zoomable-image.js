@@ -6,6 +6,8 @@ class ZoomableImageElement extends HTMLPictureElement {
     
     connectedCallback(){
 
+	var tpl_id = "zoomable-image-template";
+	
 	var id = this.getAttribute("zoomable-image-id");
 	var tiles_url = this.getAttribute("zoomable-tiles-url");
 	
@@ -14,12 +16,11 @@ class ZoomableImageElement extends HTMLPictureElement {
 	
 	var img_el = this.querySelector("img");
 
-	// const shadow = this.attachShadow({ mode: "open" });
-
 	var wrapper = document.createElement("div");
 	wrapper.setAttribute("class", "zoomable-image");
 	wrapper.setAttribute("id", "zoomable-image-" + id);
-
+	wrapper.setAttribute("data-image-id", id);
+	
 	var static_el = document.createElement("div");
 	static_el.setAttribute("class", "zoomable-static");
 	static_el.setAttribute("id", "zoomable-static-" + id);
@@ -47,10 +48,14 @@ class ZoomableImageElement extends HTMLPictureElement {
 
 	var picture_img = document.createElement("img");
 	picture_img.setAttribute("src", img_el.getAttribute("src"));
+	picture_img.setAttribute("alt", img_el.getAttribute("alt"));	
 	    
 	picture_img.setAttribute("id", "zoomable-picture-default-" + id);
 	picture_img.setAttribute("class", "card-img-top zoomable-picture-default image-square image-zoomable");
-	picture_img.setAttribute("onload", "zoomable.images.onload_image(" + id + ")");
+	picture_img.onload = function(){
+	    zoomable.images.init();
+	    zoomable.images.onload_image(id);
+	};
 	
 	picture.appendChild(picture_img);
 
@@ -68,9 +73,23 @@ class ZoomableImageElement extends HTMLPictureElement {
 	tiles_map.setAttribute("id", "zoomable-map-" + id);
 
 	tiles.appendChild(tiles_map);
+	
+	if (this.hasAttribute("template-id")){
+	    tpl_id = this.getAttribute("template-id");
+	}
+	
+	var tpl = document.getElementById(tpl_id);
+	
+	if (tpl){
+	    let tpl_content = tpl.content;
+	    wrapper.appendChild(tpl_content.cloneNode(true));
+	}
 
+	
 	wrapper.appendChild(static_el);	
 	wrapper.appendChild(tiles);
+
+	this.parentNode.replaceChild(wrapper, this);
     }
 }
 

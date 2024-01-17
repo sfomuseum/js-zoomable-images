@@ -407,11 +407,14 @@ zoomable.images = (function(){
 	},
 
 	// things we do once the page has loaded
+
+	// FIX ME... do this for one element, not all of them...
 	
 	'init': function(){
 	    
 	    var images = document.getElementsByClassName("zoomable-image");
 	    var count = images.length;
+
 	    
 	    for (var i=0; i < count; i++){
 		
@@ -419,6 +422,7 @@ zoomable.images = (function(){
 		var id = el.getAttribute("data-image-id");
 		
 		if (! id){
+		    console.log("NO IMAGE ID");
 		    continue;
 		}
 
@@ -445,7 +449,6 @@ zoomable.images = (function(){
 		};
 
 		var tiles_func = mk_tiles_func(id);
-
 		self.ensure_iiif(tiles_url, tiles_func);
 	    }
 	    
