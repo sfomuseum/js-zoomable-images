@@ -2,6 +2,10 @@
 
 JavaScript and CSS libraries for enabling IIIF-compatible "zoomable" images.
 
+## Notice
+
+This package is no longer being updated. It has been superseded by the [sfomuseum/webcomponent-zoomable-image](https://github.com/sfomuseum/webcomponent-zoomable-image) package.
+
 ## Important
 
 The documentation for this package is incomplete. For now, please consult this blog post for details:
